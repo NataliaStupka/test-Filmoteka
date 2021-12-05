@@ -1,0 +1,14 @@
+/*
+ * Главный файл стилей.
+ * Все паршалы подключаются сюда.
+ */
+
+@import './base/common';
+// @import './gallery';
+
+@import './component/button';
+@import './component/form';
+
+@import './layout/header';
+@import './layout/gallery';
+@import './layout/footer';

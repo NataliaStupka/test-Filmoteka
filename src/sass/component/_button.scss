@@ -1,0 +1,22 @@
+// button
+.button {
+  cursor: pointer;
+  // font: inherit;
+  border-radius: 5px;
+  padding: 10px 20px;
+  font-size: 15px;
+}
+
+/* button load-more */
+.load-more {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  background-color: rgb(10, 10, 116);
+  color: aliceblue;
+}
+.load-more.is-hidden {
+  display: none;
+}
