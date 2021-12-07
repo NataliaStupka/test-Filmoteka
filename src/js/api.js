@@ -1,14 +1,13 @@
 import axios from "axios";
+import { API_Key } from "./common/keys";
 
 const BASE_URL = 'https://api.themoviedb.org'
-const key = '8467b35301383f6844ef88f323a204bb';
 
 export async function fetchMovies() {
-    const url = `${BASE_URL}/3/trending/movie/day?api_key=${key}`;
+    const url = `${BASE_URL}/3/trending/movie/day?api_key=${API_Key}`;
     return await axios.get(url);
 
  }
-
 //  в проет но пока не получилось
 
 // import { fetchMovies } from './js/api-service-popular';
@@ -29,5 +28,3 @@ export async function fetchMovies() {
 // refs.popularMovie.insertAdjacentHTML('beforeend', markup);
 
 // -----------------------------------------------------------
-
-

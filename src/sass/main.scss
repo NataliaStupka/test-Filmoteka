@@ -3,7 +3,7 @@
  * Все паршалы подключаются сюда.
  */
 
-@import './base/common';
+@import './base/base';
 // @import './gallery';
 
 @import './component/button';
@@ -12,3 +12,5 @@
 @import './layout/header';
 @import './layout/gallery';
 @import './layout/footer';
+
+@import './utils/visually-hidden';
