@@ -1,6 +1,6 @@
 import './sass/main.scss';
 import { genres } from './js/common/genres';
-import { fetchMovies } from './js/api';
+import { fetchMovies } from './js/helpers/api';
 import { STORAGE_HOME_KEY } from "./js/common/keys";
 
 const refs = {
@@ -32,11 +32,13 @@ console.log('genres', genres)
     }
 // ==========================================     https://image.tmdb.org/t/p/original/{{poster_path}}
 
+// let filmsArray = [];
 function renderFilm(films) {
 
     console.log('Тут разметка фильмов', films.data.results)
 
     const filmsArray = films.data.results;
+    
     const markup = filmsArray.map(film => {
         const releseDateMovies = film.release_date;
         const releseData = (releseDateMovies.split("-"))[0];
@@ -58,9 +60,9 @@ function renderFilm(films) {
             </a>
         </li>
         `}).join('');
-    
-     refs.gallery.insertAdjacentHTML('beforeend', markup);
+    refs.gallery.insertAdjacentHTML('beforeend', markup);
+
+    // массив популярных фильмов в LocalStorage
+    localStorage.setItem(STORAGE_HOME_KEY, JSON.stringify(filmsArray));
 }
 
-// ?? LocalStorage
-localStorage.setItem(STORAGE_HOME_KEY, JSON.stringify());

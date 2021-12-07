@@ -1,5 +1,5 @@
 import axios from "axios";
-import { API_Key } from "./common/keys";
+import { API_Key } from "../common/keys";
 
 const BASE_URL = 'https://api.themoviedb.org'
 
