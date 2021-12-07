@@ -13,40 +13,45 @@ const refs = {
 // Запрос за популярными фильмами
 fetchMovies().then(film => renderFilm(film));
 
-// Ganre==================================
-  // ???
-// function genreMovie() {
-//     const keys = Object.keys(genres);
-//     const values = Object.values(genres);
 
-//     const one = genres.map(genre => {
-//         const ganreId = genre.id;
-//         const ganreName = genre.name;
-//       console.log(`${ganreId} - ${ganreName}`)
-//    })
-// }
-// genreMovie()
-console.log('genres', genres)
- for (let genre of genres) {
-        console.log(`${genre.id} - ${genre.name}`)
-    }
-// ==========================================     https://image.tmdb.org/t/p/original/{{poster_path}}
+// ================================================    
 
-// let filmsArray = [];
+
 function renderFilm(films) {
-
     console.log('Тут разметка фильмов', films.data.results)
-
-    const filmsArray = films.data.results;
-    
+    const filmsArray = films.data.results; //массив с обьектами, все фильмы
+  
     const markup = filmsArray.map(film => {
+        // ----дата выхода фильма
         const releseDateMovies = film.release_date;
-        const releseData = (releseDateMovies.split("-"))[0];
-        // const releseData = releseDateMovies.slice(0, 4);
+        const releseData = (releseDateMovies.split("-"))[0];  //дата выхода по разделителю (и 0-му индексу масива)
+        // const releseData = releseDateMovies.slice(0, 4);  //дата выхода(убирает слайсом два последних числа)
 
-        // console.log('дата выхода по разделителю (и 0-му индексу масива):', (releseDateMovies.split("-"))[0])
-        // console.log('дата выхода(убрала слайсом два последних):', releseDateMovies.slice(0,4))
+        //-----это для модалки популярность
+        const ratingMovie = Number(film.popularity).toFixed(1);
         
+        // ----рендерим жанры
+            // console.log('Все жанры 1-го фильма (номера):', film.genre_ids)
+        const genresArray = film.genre_ids.reduce((acc, id) => {
+            let genreToFind = genres.find(genre => genre.id === id); //genre - {id, name}
+            // console.log(genreToFind); //genres - [{id,name},{id,name},...]; genreToFind - {id,name}
+      if (genreToFind) {
+          acc.push(genreToFind.name);
+        //   console.log('1жанр:', genreToFind.name)
+            }
+            
+      return acc;
+    }, []);
+        console.log('Все жанры фльма(словами)', genresArray)
+
+        //больше трех жанров - Other
+        if (genresArray.length > 3) {
+            genresArray.splice(3);
+            genresArray[2] = 'Other';
+        } else if (genresArray.length === 0) {
+            genresArray[0] = 'Genre Unknown';
+        }
+                                                                // https://image.tmdb.org/t/p/original/{{poster_path}}
         return `
         <li class="gallery-item list">
             <a class="link" href="#">
@@ -54,7 +59,7 @@ function renderFilm(films) {
                     <img class="photo-img" src="${`https://image.tmdb.org/t/p/original/${film.poster_path}`}" alt="Постер ${film.title}"  />
                     <div class="info">
                         <p class=movie-title> ${film.title}</p>
-                        <p class=movie-text-data> Жанр: ${film.genre_ids} | ${releseData} </p>
+                        <p class=movie-text-data> Жанр: ${genresArray} | ${releseData} <span class='raiting-movie'>${film.vote_average}</span></p>
                     </div>
                 </div>
             </a>
@@ -66,3 +71,6 @@ function renderFilm(films) {
     localStorage.setItem(STORAGE_HOME_KEY, JSON.stringify(filmsArray));
 }
 
+// получение данных с LocalStorage
+// const theme = localStorage.getItem(STORAGE_HOME_KEY)
+// console.log('с локала стороджа', JSON.parse(theme))
