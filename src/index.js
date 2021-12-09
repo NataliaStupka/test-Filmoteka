@@ -2,19 +2,12 @@ import './sass/main.scss';
 import { genres } from './js/common/genres';
 import { fetchMovies } from './js/helpers/api';
 import { STORAGE_HOME_KEY } from "./js/common/keys";
-
-const refs = {
-    searchForm: document.querySelector('.search-form'),
-    gallery: document.querySelector('.gallery'),
-    buttonLoadMore: document.querySelector('.load-more'),
-}
-
+import {refs} from './js/common/refs'
+import {onSerchButtonLoadMore} from './js/helpers/button-load-more'
 
 // Запрос за популярными фильмами
 fetchMovies().then(film => renderFilm(film));
-
-
-// ================================================    
+ 
 
 
 function renderFilm(films) {
@@ -71,6 +64,31 @@ function renderFilm(films) {
     localStorage.setItem(STORAGE_HOME_KEY, JSON.stringify(filmsArray));
 }
 
+
+// кнопка back-to-top
+const goTopBtn = document.querySelector('.back-to-top');
+
+window.addEventListener('scroll', trackScroll);
+goTopBtn.addEventListener('click', backToTop);
+
+function trackScroll() {
+    const scrolled = window.pageYOffset;
+    const coords = document.documentElement.clientHeight;
+
+    if (scrolled > coords) {
+      goTopBtn.classList.add('back-to-top-show');
+    }
+    if (scrolled < coords) {
+      goTopBtn.classList.remove('back-to-top-show');
+    }
+  }
+
+  function backToTop() {
+    if (window.pageYOffset > 0) {
+      window.scrollBy(0, -80);
+      setTimeout(backToTop, 0);
+    }
+  }
 // получение данных с LocalStorage
 // const theme = localStorage.getItem(STORAGE_HOME_KEY)
 // console.log('с локала стороджа', JSON.parse(theme))
