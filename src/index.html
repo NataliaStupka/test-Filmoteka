@@ -30,7 +30,9 @@
 
     <main>
 <a class='back-to-top' title="Наверх">
-  <svg class='icon-circle-up' width="40" height="40"><use href="./images/icon.svg#icon-circle-up"></use></svg></a>
+  <svg class='icon-circle-up' width="40" height="40">
+    <use href="./images/icon.svg#icon-circle-up"></use>
+  </svg></a>
       <section class="gallery-conteiner">
         <div>
             <h1 class="visually-hidden">Welcome to Filmoteka Page</h1>
@@ -42,7 +44,7 @@
                                   <img class="photo-img" src="${`https://image.tmdb.org/t/p/original/${film.poster_path}`}" alt="Постер ${film.title}"  />
                                   <div class="info">
                                       <p class=movie-title> ${film.title}</p>
-                                      <p class=movie-text-data> Жанр: ${film.genre_ids} | ${releseData} </p>
+                                      <p class=movie-text-data> Жанр: ${genresArray} | ${releseData} </p>
                                   </div>
                               </div>
                           </a>

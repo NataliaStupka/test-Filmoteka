@@ -1,44 +1,66 @@
 import './sass/main.scss';
-import { genres } from './js/common/genres';
-import { fetchMovies } from './js/helpers/api';
-import { STORAGE_HOME_KEY } from "./js/common/keys";
-import {refs} from './js/common/refs'
-import {onSerchButtonLoadMore} from './js/helpers/button-load-more'
-import { upArrow } from './js/helpers/back-to-top';
+import { genres } from './js/common/genres';  //жанры
+import { fetchPopularMovies } from './js/helpers/api-popular';  //запрос за популярными фильмами
+import { fetchSearchMovies } from './js/helpers/api-input';  //запрос фильмов по поиску
+import { STORAGE_HOME_KEY } from "./js/common/keys";  //ключ (попул.фильмов) для локального хранилища
+import { refs } from './js/common/refs';
+import { onSerchButtonLoadMore } from './js/helpers/button-load-more';  //кнопка догрузить еще
+import { upArrow } from './js/helpers/back-to-top';  //кнопка прокрутка вверх
 
 // Запрос за популярными фильмами
-fetchMovies().then(film => renderFilm(film));
+fetchPopularMovies().then(film => renderFilm(film));
  
+
+// работаем с инпутом
+    let textInput = '';
+    refs.searchForm.addEventListener('submit', onSearchInput);
+
+function onSearchInput(event) {
+    event.preventDefault();
+    refs.gallery.innerHTML = '';
+    textInput = event.currentTarget.elements.searchQuery.value;
+
+   
+    // alert('ВВедите название фильма');
+
+    // запрос по поиску инпут
+fetchSearchMovies(textInput).then(film => renderFilm(film)); 
+   
+  
+}
+
+
+
 
 
 function renderFilm(films) {
-    console.log('Тут разметка фильмов', films.data.results)
+                    // console.log('Тут разметка фильмов', films.data.results)
     const filmsArray = films.data.results; //массив с обьектами, все фильмы
   
     const markup = filmsArray.map(film => {
-        // ----дата выхода фильма
+        //----дата выхода фильма
         const releseDateMovies = film.release_date;
         const releseData = (releseDateMovies.split("-"))[0];  //дата выхода по разделителю (и 0-му индексу масива)
         // const releseData = releseDateMovies.slice(0, 4);  //дата выхода(убирает слайсом два последних числа)
 
-        //-----это для модалки популярность
+        //----это для модалки популярность
         const ratingMovie = Number(film.popularity).toFixed(1);
         
         // ----рендерим жанры
-            // console.log('Все жанры 1-го фильма (номера):', film.genre_ids)
+                     // console.log('Все жанры 1-го фильма (номера):', film.genre_ids)
         const genresArray = film.genre_ids.reduce((acc, id) => {
             let genreToFind = genres.find(genre => genre.id === id); //genre - {id, name}
-            // console.log(genreToFind); //genres - [{id,name},{id,name},...]; genreToFind - {id,name}
+                     // console.log(genreToFind); //genres - [{id,name},{id,name},...]; genreToFind - {id,name}
       if (genreToFind) {
           acc.push(genreToFind.name);
-        //   console.log('1жанр:', genreToFind.name)
+                     //  console.log('1жанр:', genreToFind.name)
             }
             
       return acc;
     }, []);
-        console.log('Все жанры фльма(словами)', genresArray)
+                    // console.log('Все жанры фльма(словами)', genresArray)
 
-        //больше трех жанров - Other
+        //----больше трех жанров - Other
         if (genresArray.length > 3) {
             genresArray.splice(3);
             genresArray[2] = 'Other';
@@ -64,6 +86,7 @@ function renderFilm(films) {
     // массив популярных фильмов в LocalStorage
     localStorage.setItem(STORAGE_HOME_KEY, JSON.stringify(filmsArray));
 }
+
 
 
 
