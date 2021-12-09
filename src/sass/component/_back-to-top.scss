@@ -7,12 +7,15 @@
   height: 40px;
   text-align: center;
   line-height: 40px;
-  //   background: rgb(47, 47, 119);
   color: #eeee;
   cursor: pointer;
   border-radius: 7px;
-  display: none;
+
   transition: 1s;
+  //   display: none;  /* появляется без плавности */
+  transition: 0.3s; /* для плавности появления*/
+  height: 0;
+  opacity: 0;
 }
 
 .back-to-top:hover {
@@ -21,8 +24,12 @@
 
 .back-to-top-show {
   display: block;
+  height: auto; /* для плавности появления*/
+  opacity: 1;
 }
 
 .icon-circle-up {
   color: #eeee;
 }
+
+// проба--
