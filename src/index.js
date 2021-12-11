@@ -6,27 +6,64 @@ import { STORAGE_HOME_KEY } from "./js/common/keys";  //ключ (попул.ф�
 import { refs } from './js/common/refs';
 import { onSerchButtonLoadMore } from './js/helpers/button-load-more';  //кнопка догрузить еще
 import { upArrow } from './js/helpers/back-to-top';  //кнопка прокрутка вверх
+import { Notify } from 'notiflix/build/notiflix-notify-aio'; //вывод уведомлений
+
 
 // Запрос за популярными фильмами
 fetchPopularMovies().then(film => renderFilm(film));
  
 
-// работаем с инпутом
+
+// работаем с инпутом (поиск фильмов по ключ.слову)
     let textInput = '';
-    refs.searchForm.addEventListener('submit', onSearchInput);
+refs.searchForm.addEventListener('submit', onSearchInput);
+    
+// Настройки всплывающего уведомления
+    const objectNotify = {
+             width: '350px',
+             position: 'right-top',
+             distance: '40px',
+             timeout: 2000,
+             backOverlay: false,
+             showOnlyTheLastOne: true,
+             clickToClose: true,
+             fontFamily: 'Quicksand',
+             fontSize: '20px',
+             cssAnimation: true,
+             cssAnimationDuration: 800,
+             cssAnimationStyle: 'fade',
+             useIcon: false,
+             useFontAwesome: true,
+             fontAwesomeIconStyle: 'basic',
+             fontAwesomeIconSize: '15px',
+             
+             failure: {
+                background: 'rgb(255, 107, 8, 0.8)',
+                textColor: '#fff',
+                notiflixIconColor: 'rgb(247, 247, 247, 0.8)',
+                fontAwesomeIconColor: 'rgba(0,0,0,0.2)',
+                backOverlayColor: 'rgb(255, 107, 8, 0.2)',
+                },
+          }
+
 
 function onSearchInput(event) {
-    event.preventDefault();
-    refs.gallery.innerHTML = '';
-    textInput = event.currentTarget.elements.searchQuery.value;
+     event.preventDefault();
+     refs.gallery.innerHTML = '';
+     textInput = event.currentTarget.elements.searchQuery.value;
 
    
-    // alert('ВВедите название фильма');
+      // alert('ВВедите название фильма');
+     if (textInput === '') {
+         Notify.failure('Введите название фильма', objectNotify);
+        
+          // ??? вытянуть с локал стордж, что бы не было доп запроса
+          fetchPopularMovies().then(film => renderFilm(film)); 
+      } else {
+    // запрос фильма по поиску через название (инпут)
+    fetchSearchMovies(textInput).then(film => renderFilm(film)); 
+    }
 
-    // запрос по поиску инпут
-fetchSearchMovies(textInput).then(film => renderFilm(film)); 
-   
-  
 }
 
 
