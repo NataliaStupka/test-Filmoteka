@@ -1,50 +1,24 @@
 import './sass/main.scss';
 import { genres } from './js/common/genres';  //жанры
-import { fetchPopularMovies } from './js/helpers/api-popular';  //запрос за популярными фильмами
-import { fetchSearchMovies } from './js/helpers/api-input';  //запрос фильмов по поиску
+import { fetchPopularMovies } from './js/api/api-popular';  //запрос за популярными фильмами
+import { fetchSearchMovies } from './js/api/api-search-input';  //запрос фильмов по поиску
 import { STORAGE_HOME_KEY } from "./js/common/keys";  //ключ (попул.фильмов) для локального хранилища
 import { refs } from './js/common/refs';
 import { onSerchButtonLoadMore } from './js/helpers/button-load-more';  //кнопка догрузить еще
 import { upArrow } from './js/helpers/back-to-top';  //кнопка прокрутка вверх
 import { Notify } from 'notiflix/build/notiflix-notify-aio'; //вывод уведомлений
+import { settingNotify } from './js/common/settings-for-notiflix'; //настройка уведомлений
 
-
+let filmsArray = []
 // Запрос за популярными фильмами
 fetchPopularMovies().then(film => renderFilm(film));
  
 
 
 // работаем с инпутом (поиск фильмов по ключ.слову)
-    let textInput = '';
-refs.searchForm.addEventListener('submit', onSearchInput);
+        let textInput = '';
+    refs.searchForm.addEventListener('submit', onSearchInput);
     
-// Настройки всплывающего уведомления
-    const objectNotify = {
-             width: '350px',
-             position: 'right-top',
-             distance: '40px',
-             timeout: 2000,
-             backOverlay: false,
-             showOnlyTheLastOne: true,
-             clickToClose: true,
-             fontFamily: 'Quicksand',
-             fontSize: '20px',
-             cssAnimation: true,
-             cssAnimationDuration: 800,
-             cssAnimationStyle: 'fade',
-             useIcon: false,
-             useFontAwesome: true,
-             fontAwesomeIconStyle: 'basic',
-             fontAwesomeIconSize: '15px',
-             
-             failure: {
-                background: 'rgb(255, 107, 8, 0.8)',
-                textColor: '#fff',
-                notiflixIconColor: 'rgb(247, 247, 247, 0.8)',
-                fontAwesomeIconColor: 'rgba(0,0,0,0.2)',
-                backOverlayColor: 'rgb(255, 107, 8, 0.2)',
-                },
-          }
 
 
 function onSearchInput(event) {
@@ -54,27 +28,42 @@ function onSearchInput(event) {
 
    
       // alert('ВВедите название фильма');
-     if (textInput === '') {
-         Notify.failure('Введите название фильма', objectNotify);
+    if (textInput === '') {
+        Notify.failure('Please enter a movie name', settingNotify);
         
-          // ??? вытянуть с локал стордж, что бы не было доп запроса
-          fetchPopularMovies().then(film => renderFilm(film)); 
-      } else {
+        // ??? вытянуть с локал стордж, что бы не было доп запроса
+        fetchPopularMovies().then(film => renderFilm(film));
+    } else if (filmsArray.length === 0) {
+        // ???!!! нужно что-то обнулить так что бы изначально массив =0, а то сразу уже 20
+        Notify.warning('Nothing found. Please try again.', settingNotify);
+        refs.searchForm.value = '';
+    } else {
     // запрос фильма по поиску через название (инпут)
     fetchSearchMovies(textInput).then(film => renderFilm(film)); 
     }
-
+console.log('массив???????? - ', filmsArray.length)
 }
-
 
 
 
 
 function renderFilm(films) {
                     // console.log('Тут разметка фильмов', films.data.results)
-    const filmsArray = films.data.results; //массив с обьектами, все фильмы
+    filmsArray = films.data.results; //массив с обьектами, все фильмы
   
     const markup = filmsArray.map(film => {
+        // ------------
+        delete film.adult;
+        delete film.video;
+        
+        // -----------
+            if (film.name) {
+        film.title = film.name;
+            }
+            if (film.original_name) {
+        film.original_title = film.original_name;
+            }
+
         //----дата выхода фильма
         const releseDateMovies = film.release_date;
         const releseData = (releseDateMovies.split("-"))[0];  //дата выхода по разделителю (и 0-му индексу масива)
@@ -122,6 +111,7 @@ function renderFilm(films) {
 
     // массив популярных фильмов в LocalStorage
     localStorage.setItem(STORAGE_HOME_KEY, JSON.stringify(filmsArray));
+    
 }
 
 
