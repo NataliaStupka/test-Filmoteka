@@ -9,24 +9,24 @@ import { upArrow } from './js/helpers/back-to-top';  //кнопка прокру
 import { Notify } from 'notiflix/build/notiflix-notify-aio'; //вывод уведомлений
 import { settingNotify } from './js/common/settings-for-notiflix'; //настройка уведомлений
 
+import { onLoadMore } from './js/helpers/button-load-more';
 let filmsArray = []
+let page = 1;
+
 // Запрос за популярными фильмами
-fetchPopularMovies().then(film => renderFilm(film));
- 
+fetchPopularMovies(page).then(film => renderFilm(film)).catch(error => console.log('Это ошибочка; ', error));
+//------  ???ПОПРОБОВАТЬ ЧЕРЕЗ try catch
 
 
 // работаем с инпутом (поиск фильмов по ключ.слову)
         let textInput = '';
     refs.searchForm.addEventListener('submit', onSearchInput);
     
-
-
 function onSearchInput(event) {
      event.preventDefault();
      refs.gallery.innerHTML = '';
      textInput = event.currentTarget.elements.searchQuery.value;
 
-   
       // alert('ВВедите название фильма');
     if (textInput === '') {
         Notify.failure('Please enter a movie name', settingNotify);
@@ -47,7 +47,7 @@ console.log('массив???????? - ', filmsArray.length)
 
 
 
-function renderFilm(films) {
+export function renderFilm(films) {
                     // console.log('Тут разметка фильмов', films.data.results)
     filmsArray = films.data.results; //массив с обьектами, все фильмы
   
@@ -55,8 +55,8 @@ function renderFilm(films) {
         // ------------
         delete film.adult;
         delete film.video;
-        
         // -----------
+
             if (film.name) {
         film.title = film.name;
             }
@@ -109,10 +109,13 @@ function renderFilm(films) {
         `}).join('');
     refs.gallery.insertAdjacentHTML('beforeend', markup);
 
-    // массив популярных фильмов в LocalStorage
+    // массив популярных фильмов в/c LocalStorage
     localStorage.setItem(STORAGE_HOME_KEY, JSON.stringify(filmsArray));
-    
+    const theme = localStorage.getItem(STORAGE_HOME_KEY);
+    console.log('нашла??:',  JSON.parse(theme))
 }
+
+
 
 
 
