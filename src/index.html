@@ -15,18 +15,9 @@
   <body>
     <!-- Так добавляются фрагменты в главные HTML-файлы страниц. -->
     <!-- <include src="./partials/example.html"></include> -->
-    <header>
-      <form class="search-form" id="search-form">
-        <input
-          class="input-form"
-          type="text"
-          name="searchQuery"
-          autocomplete="off"
-          placeholder="Search images..."
-        />
-        <button class="button-form button" type="submit">Search</button>
-      </form>
-    </header>
+    
+<include src="./partials/header.html"></include>
+
 
     <main>
 <a class='back-to-top' title="Наверх">
@@ -42,11 +33,12 @@
                             <a class="link" href="#">
                               <div class="photo-card">
                                   <img class="photo-img" src="${`https://image.tmdb.org/t/p/original/${film.poster_path}`}" alt="Постер ${film.title}"  />
-                                  <div class="info">
+                                </div>
+                              <div class="info">
                                       <p class=movie-title> ${film.title}</p>
                                       <p class=movie-text-data> Жанр: ${genresArray} | ${releseData} </p>
-                                  </div>
-                              </div>
+                                </div>
+                              
                           </a>
                       </li> -->
 
@@ -70,6 +62,9 @@
     </p>
   </div>
 </footer>
+
+  <include src='./partials/backdrop.html'></include>
+  
     <!-- Скрипт идёт последним в разметке. В нём уже подключен главный SASS-файл. -->
     <script src="./index.js"></script>
   </body>

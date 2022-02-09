@@ -1,6 +1,6 @@
 import { refs } from '../common/refs.js';
 import { fetchPopularMovies } from '../api/api-popular';
-import { renderFilm} from '../../index'
+import { renderFilm} from '../main-page'
 
 let page = 1;
 
@@ -12,5 +12,5 @@ export function onLoadMore() {
 
  fetchPopularMovies(page).then(film => renderFilm(film));
  
-      //  ДОБАВИТЬ ПЕРЕХОД НА СЛЕД СТР. И ПРИ ПОИСКЕ
+      //  ДОБАВИТЬ ПЕРЕХОД НА СЛЕД СТР. ПРИ ПОИСКЕ
 }
